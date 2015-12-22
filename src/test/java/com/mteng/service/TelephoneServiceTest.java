@@ -2,6 +2,7 @@ package com.mteng.service;
 
 import com.mteng.ApiApplication;
 import com.mteng.dto.TSRespContainer;
+import com.mteng.service.impl.TelephoneServiceImpl;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,11 +20,16 @@ import java.util.List;
 public class TelephoneServiceTest extends TestCase {
 
     @Autowired
-    TelephoneService telephoneService;
+    PaginationHelper paginationHelper;
 
     @Test
     public void testGenerateCombos() throws Exception {
-        // List<String> container = telephoneService.getPaginatedCombinations("","","");
-        // List<String> tsRespContainer = telephoneService.getPaginatedCombinations(36,1,3);
+        Integer totalRecNum = 9;
+        Integer pageNum = 2;
+        Integer pageSize = 2;
+        Integer totalPageNumber = 5;
+        int startingIndex = paginationHelper.getPaginatedComboStartingIndex(pageNum, pageSize, totalPageNumber, totalRecNum);
+        int endingIndex = paginationHelper.getPaginatedComboEndingIndex(pageSize, totalRecNum, startingIndex);
+        System.out.println(startingIndex + " and " + endingIndex);
     }
 }

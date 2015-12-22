@@ -16,8 +16,10 @@ public class TelephoneController {
     @Autowired
     ContentWrapper contentWrapper;
 
+    // v1 --
+
     @RequestMapping(
-            value = "/number/{phoneNumber}",
+            value = "v1/number/{phoneNumber}",
             params = {ServiceConstants.PAGE, ServiceConstants.SIZE},
             method = RequestMethod.GET
     )

@@ -1,8 +1,9 @@
 package com.mteng.service.impl;
 
 import com.mteng.dto.PageContainer;
+import com.mteng.service.PaginationHelper;
 import com.mteng.service.TelephoneService;
-import com.mteng.util.ServiceConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -13,11 +14,27 @@ import java.util.List;
 @Service
 public class TelephoneServiceImpl implements TelephoneService {
 
-    // Implementation
+    @Autowired
+    PaginationHelper paginationHelper;
 
     public List<String> getPaginatedCombinations(List<String> allCombinations, Integer pageNum, Integer pageSize) {
-        int fromIndex = getPaginatedComboStartingIndex(pageNum, pageSize, allCombinations.size());
-        int toIndex = getPaginatedComboEndingIndex(pageSize, allCombinations, fromIndex);
+
+        int fromIndex = paginationHelper.getPaginatedComboStartingIndex(
+                pageNum,
+                pageSize,
+                paginationHelper.getTotalPageNum(
+                        pageSize,
+                        allCombinations.size()
+                ),
+                allCombinations.size()
+        );
+
+        int toIndex = paginationHelper.getPaginatedComboEndingIndex(
+                pageSize,
+                allCombinations.size(),
+                fromIndex
+        );
+
         List<String> paginatedCombos = allCombinations.subList(fromIndex, toIndex);
         return paginatedCombos;
     }
@@ -33,55 +50,20 @@ public class TelephoneServiceImpl implements TelephoneService {
     public PageContainer getPagination(HttpServletRequest request, Integer pageNum, Integer pageSize, String phoneNumber) {
         PageContainer pageContainer = new PageContainer();
         List<String> resultCombo = getAllCombinations(phoneNumber);
-        Integer totalNumber = getTotalPageNum(Integer.valueOf(pageSize), resultCombo.size());
-        pageContainer.setTotalPageNumber(String.valueOf(totalNumber));
-        UriComponentsBuilder uriLast = UriComponentsBuilder.newInstance().fromUriString(request.getRequestURI());
-        uriLast.queryParam(ServiceConstants.SIZE,"100");
-        uriLast.queryParam(ServiceConstants.PAGE,"100");
-        uriLast.host(ServiceConstants.HOST);
-        uriLast.port(ServiceConstants.PORT);
+        Integer totalPageNumber = paginationHelper.getTotalPageNum(Integer.valueOf(pageSize), resultCombo.size());
+        pageContainer.setTotalPageNumber(String.valueOf(totalPageNumber));
+
+        UriComponentsBuilder uriLast = paginationHelper.getLastPageURI(request, pageSize, totalPageNumber);
+        UriComponentsBuilder uriNext = paginationHelper.getNextPageURI(request, pageSize, totalPageNumber, pageNum);
+        UriComponentsBuilder uriPrev = paginationHelper.getPrevPageURI(request, pageSize, totalPageNumber, pageNum);
+
         pageContainer.setLastPage(uriLast.toUriString());
-        pageContainer.setNextPage("");
-        pageContainer.setPreviousPage("");
+        pageContainer.setNextPage(uriNext.toUriString());
+        pageContainer.setPreviousPage(uriPrev.toUriString());
         return pageContainer;
     }
 
-    // PAGINATION
-
-    private int getPaginatedComboEndingIndex(Integer pageSize, List<String> combos, int fromIndex) {
-        int toIndex = fromIndex + Integer.valueOf(pageSize);
-
-        if (toIndex > combos.size()) {
-            toIndex = combos.size();
-        }
-        return toIndex;
-    }
-
-    private int getPaginatedComboStartingIndex(Integer pageNum, Integer pageSize, Integer totalPageNumber) {
-        if (pageNum > totalPageNumber) {
-            pageNum = totalPageNumber;
-        }
-
-        int fromIndex = 0;
-
-        if (!Integer.valueOf(pageNum).equals(1)) {
-            fromIndex = Integer.valueOf(pageSize) * (Integer.valueOf(pageNum) - 1) + 1;
-        } else {
-            fromIndex = 0;
-        }
-        return fromIndex;
-    }
-
-    private Integer getTotalPageNum(Integer pageSize, Integer totalRecNumber) {
-        Integer totalPagesNumber = totalRecNumber / pageSize;
-        if (totalRecNumber % pageSize > 0) {
-            totalPagesNumber++;
-        }
-        return totalPagesNumber;
-    }
-
-
-    // Combination
+    // Combination --
 
     private void generateCombosHelper(List<String> combos, String prefix, String remaining) {
         int digit = Integer.parseInt(remaining.substring(0, 1));
