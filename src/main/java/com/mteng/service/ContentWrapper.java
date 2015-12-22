@@ -16,25 +16,23 @@ public class ContentWrapper {
     public TSRespContainer getResp(HttpServletRequest request, String phoneNumber, Integer pageNum, Integer pageSize) {
 
         TSRespContainer tsRespContainer = new TSRespContainer();
-
-        List list = telephoneService.getPaginatedCombinations(
-                phoneNumber,
-                Integer.valueOf(pageNum),
-                Integer.valueOf(pageSize)
+        List allCombination = telephoneService.getAllCombinations(phoneNumber);
+        List paginatedCombinations = telephoneService.getPaginatedCombinations(
+                allCombination,
+                pageNum,
+                pageSize
         );
-        List allCombination = telephoneService.getAllCombinations(Integer.valueOf(phoneNumber));
 
         tsRespContainer.setCount(String.valueOf(allCombination.size()));
-        tsRespContainer.setCombinations(list);
+        tsRespContainer.setCombinations(paginatedCombinations);
         tsRespContainer.setPagination(
                 telephoneService.getPagination(
                         request,
                         pageNum,
                         pageSize,
-                        Integer.valueOf(phoneNumber)
+                        phoneNumber
                 )
         );
-
         return tsRespContainer;
     }
 }

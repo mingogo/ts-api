@@ -24,6 +24,6 @@ public class TelephoneServiceTest extends TestCase {
     @Test
     public void testGenerateCombos() throws Exception {
         // List<String> container = telephoneService.getPaginatedCombinations("","","");
-        List<String> tsRespContainer = telephoneService.getPaginatedCombinations(36,1,3);
+        // List<String> tsRespContainer = telephoneService.getPaginatedCombinations(36,1,3);
     }
 }

@@ -15,28 +15,22 @@ public class TelephoneServiceImpl implements TelephoneService {
 
     // Implementation
 
-    @Override
-    public List<String> getPaginatedCombinations(String phoneNumber, Integer pageNum, Integer pageSize) {
-
-        List<String> combos = getAllCombinations(Integer.valueOf(phoneNumber));
-        Integer totalPageNumber = getTotalPageNum(pageSize, combos.size());
-        int fromIndex = getPaginatedComboStartingIndex(pageNum, pageSize, totalPageNumber);
-        int toIndex = getPaginatedComboEndingIndex(pageSize, combos, fromIndex);
-
-        List<String> paginatedCombos = combos.subList(fromIndex, toIndex);
-
+    public List<String> getPaginatedCombinations(List<String> allCombinations, Integer pageNum, Integer pageSize) {
+        int fromIndex = getPaginatedComboStartingIndex(pageNum, pageSize, allCombinations.size());
+        int toIndex = getPaginatedComboEndingIndex(pageSize, allCombinations, fromIndex);
+        List<String> paginatedCombos = allCombinations.subList(fromIndex, toIndex);
         return paginatedCombos;
     }
 
     @Override
-    public List<String> getAllCombinations(Integer phoneNumber) {
+    public List<String> getAllCombinations(String phoneNumber) {
         List<String> combos = new LinkedList<>();
-        generateCombosHelper(combos, "", String.valueOf(phoneNumber));
+        generateCombosHelper(combos, "", phoneNumber);
         return combos;
     }
 
     @Override
-    public PageContainer getPagination(HttpServletRequest request, Integer pageNum, Integer pageSize, Integer phoneNumber) {
+    public PageContainer getPagination(HttpServletRequest request, Integer pageNum, Integer pageSize, String phoneNumber) {
         PageContainer pageContainer = new PageContainer();
         List<String> resultCombo = getAllCombinations(phoneNumber);
         Integer totalNumber = getTotalPageNum(Integer.valueOf(pageSize), resultCombo.size());
