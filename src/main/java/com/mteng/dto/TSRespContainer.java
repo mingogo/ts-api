@@ -11,4 +11,5 @@ import java.util.List;
 public class TSRespContainer {
     @Setter @Getter private String count;
     @Setter @Getter private List<String> combinations;
+    @Setter @Getter private PageContainer pagination;
 }

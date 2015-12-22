@@ -1,32 +1,33 @@
 package com.mteng.web.controller;
 
 import com.mteng.dto.TSRespContainer;
-import com.mteng.service.TelephoneService;
-import com.mteng.util.QueryConstants;
+import com.mteng.service.ContentWrapper;
+import com.mteng.util.ServiceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by mteng on 12/21/2015.
- */
 @Controller
 @RequestMapping(value = "/api")
 public class TelephoneController {
 
     @Autowired
-    TelephoneService telephoneService;
+    ContentWrapper contentWrapper;
 
-    @RequestMapping(value = "/number/{phoneNumber}", params = {QueryConstants.PAGE, QueryConstants.SIZE, QueryConstants.SORT_BY}, method = RequestMethod.GET)
+    @RequestMapping(
+            value = "/number/{phoneNumber}",
+            params = {ServiceConstants.PAGE, ServiceConstants.SIZE},
+            method = RequestMethod.GET
+    )
     @ResponseBody
-    public TSRespContainer findAllPaginatedAndSorted(
-            @PathVariable("phoneNumber") final String number
-            // @PathVariable("phoneNumber") final String number,
-            // @RequestParam(value = QueryConstants.PAGE) final int page,
-            // @RequestParam(value = QueryConstants.SIZE) final int size
+    public TSRespContainer findAllPaginated(
+            HttpServletRequest request,
+            @PathVariable("phoneNumber") String phoneNumber,
+            @RequestParam(value = ServiceConstants.PAGE) Integer pageNumber,
+            @RequestParam(value = ServiceConstants.SIZE) Integer pageSize
     ) {
-        return telephoneService.getResp(number);
+        return contentWrapper.getResp(request, phoneNumber, pageNumber, pageSize);
     }
 }
