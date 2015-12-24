@@ -53,13 +53,13 @@ public class TelephoneServiceImpl implements TelephoneService {
         Integer totalPageNumber = paginationHelper.getTotalPageNum(Integer.valueOf(pageSize), resultCombo.size());
         pageContainer.setTotalPageNumber(String.valueOf(totalPageNumber));
 
-        UriComponentsBuilder uriLast = paginationHelper.getLastPageURI(request, pageSize, totalPageNumber);
-        UriComponentsBuilder uriNext = paginationHelper.getNextPageURI(request, pageSize, totalPageNumber, pageNum);
-        UriComponentsBuilder uriPrev = paginationHelper.getPrevPageURI(request, pageSize, totalPageNumber, pageNum);
+        Integer uriLast = paginationHelper.getLastPage(pageSize, totalPageNumber);
+        Integer uriNext = paginationHelper.getNextPage(pageSize, totalPageNumber, pageNum);
+        Integer uriPrev = paginationHelper.getPrevPage(pageSize, totalPageNumber, pageNum);
 
-        pageContainer.setLastPage(uriLast.toUriString());
-        pageContainer.setNextPage(uriNext.toUriString());
-        pageContainer.setPreviousPage(uriPrev.toUriString());
+        pageContainer.setLastPage(String.valueOf(uriLast));
+        pageContainer.setNextPage(String.valueOf(uriNext));
+        pageContainer.setPreviousPage(String.valueOf(uriPrev));
         return pageContainer;
     }
 
