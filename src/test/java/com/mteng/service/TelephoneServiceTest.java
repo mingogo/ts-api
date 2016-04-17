@@ -1,16 +1,12 @@
 package com.mteng.service;
 
 import com.mteng.ApiApplication;
-import com.mteng.dto.TSRespContainer;
-import com.mteng.service.impl.TelephoneServiceImpl;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.List;
 
 /**
  * Created by mteng on 12/20/2015.

@@ -1,10 +1,6 @@
 package com.mteng.service;
 
-import com.mteng.util.ServiceConstants;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class PaginationHelper {

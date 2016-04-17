@@ -1,11 +1,10 @@
 package com.mteng.service.impl;
 
-import com.mteng.dto.PageContainer;
+import com.mteng.dto.PageDto;
 import com.mteng.service.PaginationHelper;
 import com.mteng.service.TelephoneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
@@ -29,14 +28,11 @@ public class TelephoneServiceImpl implements TelephoneService {
                 allCombinations.size()
         );
 
-        int toIndex = paginationHelper.getPaginatedComboEndingIndex(
+        return allCombinations.subList(fromIndex, paginationHelper.getPaginatedComboEndingIndex(
                 pageSize,
                 allCombinations.size(),
                 fromIndex
-        );
-
-        List<String> paginatedCombos = allCombinations.subList(fromIndex, toIndex);
-        return paginatedCombos;
+        ));
     }
 
     @Override
@@ -47,19 +43,13 @@ public class TelephoneServiceImpl implements TelephoneService {
     }
 
     @Override
-    public PageContainer getPagination(HttpServletRequest request, Integer pageNum, Integer pageSize, String phoneNumber) {
-        PageContainer pageContainer = new PageContainer();
-        List<String> resultCombo = getAllCombinations(phoneNumber);
-        Integer totalPageNumber = paginationHelper.getTotalPageNum(Integer.valueOf(pageSize), resultCombo.size());
+    public PageDto getPagination(HttpServletRequest request, Integer pageNum, Integer pageSize, String phoneNumber) {
+        PageDto pageContainer = new PageDto();
+        Integer totalPageNumber = paginationHelper.getTotalPageNum(Integer.valueOf(pageSize), getAllCombinations(phoneNumber).size());
         pageContainer.setTotalPageNumber(String.valueOf(totalPageNumber));
-
-        Integer uriLast = paginationHelper.getLastPage(pageSize, totalPageNumber);
-        Integer uriNext = paginationHelper.getNextPage(pageSize, totalPageNumber, pageNum);
-        Integer uriPrev = paginationHelper.getPrevPage(pageSize, totalPageNumber, pageNum);
-
-        pageContainer.setLastPage(String.valueOf(uriLast));
-        pageContainer.setNextPage(String.valueOf(uriNext));
-        pageContainer.setPreviousPage(String.valueOf(uriPrev));
+        pageContainer.setLastPage(String.valueOf(paginationHelper.getLastPage(pageSize, totalPageNumber)));
+        pageContainer.setNextPage(String.valueOf(paginationHelper.getNextPage(pageSize, totalPageNumber, pageNum)));
+        pageContainer.setPreviousPage(String.valueOf(paginationHelper.getPrevPage(pageSize, totalPageNumber, pageNum)));
         return pageContainer;
     }
 
@@ -67,7 +57,6 @@ public class TelephoneServiceImpl implements TelephoneService {
 
     private void generateCombosHelper(List<String> combos, String prefix, String remaining) {
         int digit = Integer.parseInt(remaining.substring(0, 1));
-
         if (remaining.length() == 1) {
             for (int i = 0; i < mappings[digit].length; i++) {
                 combos.add(prefix + mappings[digit][i]);
