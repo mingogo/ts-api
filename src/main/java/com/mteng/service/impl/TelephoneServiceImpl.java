@@ -21,10 +21,7 @@ public class TelephoneServiceImpl implements TelephoneService {
         int fromIndex = paginationHelper.getPaginatedComboStartingIndex(
                 pageNum,
                 pageSize,
-                paginationHelper.getTotalPageNum(
-                        pageSize,
-                        allCombinations.size()
-                ),
+                paginationHelper.getTotalPageNum( pageSize, allCombinations.size() ),
                 allCombinations.size()
         );
 
